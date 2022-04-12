@@ -37,7 +37,7 @@ services:
       - "magento.test:172.17.0.1"
 
   phpfpm:
-    image: markoshust/magento-php:7.4-fpm-13
+    image: markoshust/magento-php:7.4-fpm-14
     volumes: *appvolumes
     extra_hosts: *appextrahosts
     env_file: env/phpfpm.env
@@ -83,8 +83,8 @@ services:
     env_file: env/rabbitmq.env
     extra_hosts: *appextrahosts
 
-  mailcatcher:
-    image: sj26/mailcatcher
+  maildev:
+    image: maildev/maildev
     ports:
       - "1080:1080"
     extra_hosts: *appextrahosts
