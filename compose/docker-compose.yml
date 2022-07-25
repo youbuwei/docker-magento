@@ -26,7 +26,7 @@ services:
       - appdata:/var/www/html
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
-      - config/nginx:/etc/nginx/conf.d
+      - ./config/nginx:/etc/nginx/conf.d
     #extra_hosts: &appextrahosts
       ## Selenium support, replace "magento.test" with URL of your site
       #- "magento.test:172.17.0.1"
