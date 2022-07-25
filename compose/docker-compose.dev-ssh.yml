@@ -9,7 +9,7 @@ services:
     volumes: *appvolumes
 
   ssh:
-    image: markoshust/ssh
+    image: youbuwei/ssh
     ports:
       - "22:22"
     volumes: *appvolumes

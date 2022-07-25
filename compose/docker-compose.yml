@@ -21,16 +21,18 @@ services:
     volumes: &appvolumes
       - ~/.composer:/var/www/.composer:cached
       - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa:cached
+      - ~/.ssh/id_rsa.pub:/var/www/.ssh/authorized_keys:cached
       - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts:cached
       - appdata:/var/www/html
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
+      - config/nginx:/etc/nginx/conf.d
     #extra_hosts: &appextrahosts
       ## Selenium support, replace "magento.test" with URL of your site
       #- "magento.test:172.17.0.1"
 
   phpfpm:
-    image: markoshust/magento-php:8.1-fpm-1
+    image: youbuwei/magento-php:7.4-fpm-1
     volumes: *appvolumes
     env_file: env/phpfpm.env
     #extra_hosts: *appextrahosts
