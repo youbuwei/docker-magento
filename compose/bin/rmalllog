@@ -1,0 +1,4 @@
+#!/bin/bash
+bin/cliq rm -rf var/debug/db.log
+bin/cliq rm -rf var/log/*
+rm src/var/debug/db.log src/var/log/* >/dev/null 2>&1
