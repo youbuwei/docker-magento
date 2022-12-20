@@ -5,8 +5,11 @@ ARG APP_ID=1000
 RUN groupadd -g "$APP_ID" app \
   && useradd -g "$APP_ID" -u "$APP_ID" -d /var/www -s /bin/bash app
 
-RUN mkdir -p /etc/nginx/html /var/www/html /sock \
+RUN mkdir -p /etc/nginx/html /var/www/html /sockj \
   && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock
+
+RUN  sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+RUN  apt-get clean
 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
@@ -29,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     libxslt1-dev \
     libzip-dev \
+    libgpgme11-dev \
     lsof \
     mailutils \
     msmtp \
@@ -43,6 +47,7 @@ RUN pecl channel-update pecl.php.net && pecl install \
     redis \
     ssh2-1.3.1 \
     xdebug \
+    gnupg \
   && pecl clear-cache \
   && rm -rf /tmp/pear
 
@@ -73,6 +78,7 @@ RUN docker-php-ext-configure \
     imagick \
     redis \
     ssh2 \
+    gnupg \
     xdebug
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
