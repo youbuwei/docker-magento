@@ -1,0 +1,71 @@
+#!/bin/bash
+##########################################################################
+# Switch HP Stellar country env
+#
+# Usage:
+# bin/switch-country <country_code>
+#
+# e.g:
+# bin/switch-country in
+##########################################################################
+
+if [ -z "$1" ]; then
+	echo "Not specified country code";
+	exit 125;
+fi
+
+COUNTRY_CODE="$1";
+echo "> Country Code: ${COUNTRY_CODE}";
+
+DB_CONFIG_FILE="config/db/env_${COUNTRY_CODE}.php"
+NGINX_CONFIG_FILE="config/nginx/availables/default_${COUNTRY_CODE}.conf"
+MAGENTO_CONFIG_FILE="src/build/config/new/test/config_${COUNTRY_CODE}.php"
+
+if [ ! -f "$MAGENTO_CONFIG_FILE" ]; then
+  echo "> No hpols config file: ${MAGENTO_CONFIG_FILE}";
+  exit 125;
+fi
+
+if [ ! -f "$DB_CONFIG_FILE" ]; then
+  echo "> No database config file: ${DB_CONFIG_FILE}";
+  exit 125;
+fi
+
+if [ ! -f "$NGINX_CONFIG_FILE" ]; then
+  echo "> No nginx config file: ${NGINX_CONFIG_FILE}";
+  exit 125;
+fi
+
+echo "# Step 1: Copy nginx configuration"
+# ln -sf ${NGINX_CONFIG_FILE} config/nginx/conf.d/hp.conf
+cp -f ${NGINX_CONFIG_FILE} config/nginx/conf.d/default.conf
+
+echo "# Step 2: Copy config to app/etc folder according to country code"
+cp -f ${MAGENTO_CONFIG_FILE} src/app/etc/config.php
+bin/copytocontainer app/etc/config.php
+
+echo "# Step 3: Update database configuration for app/etc/env.php"
+cp -f ${DB_CONFIG_FILE} src/app/etc/env.php
+bin/copytocontainer app/etc/env.php
+
+echo "# Step 4: Clean Cache"
+bin/magento cache:clean
+
+read -r -p "Are you sure you have change database configuration for the app/etc/env.php? [Y/n] " input
+case $input in
+    [yY][eE][sS]|[yY])
+		echo "# Step 5: Initail stellar project"
+		bin/magento setup:upgrade
+		;;
+
+    [nN][oO]|[nN])
+		echo "Please manually to modify atabase configuration for the app/etc/env.php then run command setup:upgrade"
+       	;;
+
+    *)
+		echo "Invalid input..."
+		exit 1
+		;;
+esac
+
+echo "Done!"

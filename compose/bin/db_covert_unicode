@@ -1,0 +1,3 @@
+#!/bin/bash
+[ -z "$1" ] && echo "Please specify a sql file" && exit
+sed -i '' 's/utf8mb4_0900_ai_ci/utf8mb4_unicode_ci/g' "$@"

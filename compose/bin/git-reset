@@ -1,0 +1,5 @@
+#!/bin/bash
+[ -z "$1" ] && echo "Please specify a branch (ex. develop)" && exit
+docker-compose exec phpfpm git reset --hard origin/"$@"
+docker-compose exec phpfpm git checkout "$@"
+docker-compose exec phpfpm git pull

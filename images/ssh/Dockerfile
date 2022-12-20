@@ -2,6 +2,8 @@ FROM debian:buster-slim
 
 ARG APP_ID=1000
 
+RUN  sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y ssh
 
 RUN groupadd -g "$APP_ID" app \
